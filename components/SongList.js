@@ -1,45 +1,59 @@
 import { Text, FlatList, Image, View, StyleSheet } from "react-native";
 import { millisToMinutesAndSeconds } from "../utils";
+import { Ionicons } from '@expo/vector-icons';
+import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import PreviewScreen from "../screens/PreviewScreen";
 
-
-const SongList = ({ tracks }) => {
+const SongList = ({ tracks, navigation }) => {
     
 
     return (
         <FlatList 
             data={tracks} 
-            
-            renderItem={({ item, index }) => {
-
+            renderItem={({ item }) => {
+                console.log(item.externalUrl)
                 return (
                     <View style={styles.container}>
-                        <View style={styles.index}>
-                            <Text style={{ color: "white" }}>{index + 1}</Text>
-                        </View>
-                        <View style={styles.imageView}>
-                            <Image
-                                source={{ uri: item.imageUrl }}
-                                style={styles.image}
-                            />
-                        </View>
                         
-
-                        <View style={styles.titleAndArtist}>
-                            
-                            <Text numberOfLines={1} style={{ color: "white" }}>{item.songTitle}</Text>
-                            <Text numberOfLines={1} style={{ color: "white" }}>{item.songArtists[0].name}</Text>
-                        </View>
+                        {/* play button */}
+                        <Pressable
+                            onPress = {() => {
+                                navigation.navigate('PreviewScreen', {previewUrl: item.previewUrl})
+                            }} style={styles.playButton}>
+                            <View>
+                                <Ionicons name="play-circle" size={30} color="green" />
+                            </View>
+                        </Pressable>
                         
-                        <View style={styles.album}>
-                            <Text numberOfLines={1} style={{ color: "white" }}>{item.albumName} </Text>
-                        </View>
+                        {/* details */}
+                        <Pressable
+                            onPress = {() => {
+                                navigation.navigate('DetailsScreen', {externalUrl: item.externalUrl})
+                            }} style={styles.details}>
+                            {/* song image */}
+                            <View style={styles.imageView}>
+                                <Image
+                                   source={{ uri: item.imageUrl }}
+                                    style={styles.image}
+                                />
+                            </View>
                         
-                        <View style={styles.duration}>
-                            <Text style={{ color: "white" }}>{millisToMinutesAndSeconds(item.duration)}</Text>
-                        </View>
+                            {/* title and artist */}
+                            <View style={styles.titleAndArtist}>
+                                <Text numberOfLines={1} style={{ color: "white" }}>{item.songTitle}</Text>
+                                <Text numberOfLines={1} style={{ color: "white" }}>{item.songArtists[0].name}</Text>
+                            </View>
                         
-
-
+                            {/* album */}
+                            <View style={styles.album}>
+                                <Text numberOfLines={1} style={{ color: "white" }}>{item.albumName} </Text>
+                            </View>
+                        
+                            {/* duration */}
+                            <View style={styles.duration}>
+                                <Text style={{ color: "white" }}>{millisToMinutesAndSeconds(item.duration)}</Text>
+                            </View>
+                        </Pressable>
                     </View>
                     
                     
@@ -85,11 +99,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         textAlign: 'left',
     },
-    index: {
+    playButton: {
         flexDirection: 'row',
-        width: '5%',
+        width: '10%',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    details: {
+        flexDirection: 'row',
+        height: '100%',
+        width: '90%',
+        justifyContent: 'space-between',
     }
   });
 

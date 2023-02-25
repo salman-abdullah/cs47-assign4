@@ -4,63 +4,28 @@ import { Themes } from "./assets/Themes";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 import SpotifyAuthButton from "./components/SpotifyAuthButton";
 import SongList from "./components/SongList";
+import { NavigationContainer } from "@react-navigation/native";
+import 'react-native-gesture-handler';
+import { createStackNavigator } from '@react-navigation/stack';
+import DetailsScreen from "./screens/DetailsScreen";
+import PreviewScreen from "./screens/PreviewScreen";
+import HomeScreen from "./screens/HomeScreen";
 
+const Stack = createStackNavigator();
 
 export default function App() {
-  // Pass in true to useSpotifyAuth to use the album ID (in env.js) instead of top tracks
-  const { token, tracks, getSpotifyAuth } = useSpotifyAuth();
 
-  console.log("tracks", tracks);
-
-  let contentDisplayed = null;
-
-  if (token) {
-    contentDisplayed = <SongList tracks={tracks}/>;
-  } else {
-    contentDisplayed = (
-      <SpotifyAuthButton authenticationFunction={getSpotifyAuth}/>
-    );
-  }
   return (
-    <SafeAreaView style={styles.container}>
+    <NavigationContainer>
+      <Stack.Navigator>
 
-      <View style={styles.header}>
-        <Image
-        source={require('./assets/spotify-logo.png')}
-        style={styles.logo}
-        />
-        <Text style={styles.headerText}>My Top Tracks</Text>
-      </View>
+        <Stack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown:false,}}/>
 
+        <Stack.Screen name="DetailsScreen" component={DetailsScreen}/>
 
-      {contentDisplayed}
-    </SafeAreaView>
+        <Stack.Screen name="PreviewScreen" component={PreviewScreen}/>
+
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Themes.colors.background,
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
-  },
-  logo: {
-    height: 30,
-    width: 30,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '7%',
-    width: '100%',
-  },
-  headerText: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-    padding: 6,
-  },
-  padding: 100
-});
